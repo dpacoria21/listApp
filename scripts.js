@@ -36,11 +36,12 @@ const buttonTrash = document.querySelector('.icon__trash');
 
 // clase Actividad
 class Activity {
-    constructor(title, time, desc, index) {
+    constructor(title, time, desc, index, activate = false) {
         this.title = title;
         this.time = time;
         this.description = desc;
         this.index = index;
+        this.activate = activate;
     }
 }
 
@@ -77,10 +78,8 @@ function renderActivity(activity) {
 
     <div class="list__part list__options">
         
-        <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-pencil-square icon boton__${index} icon__update" viewBox="0 0 16 16">
-            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-        </svg>
+        
+
         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-play-fill icon boton__${index} icon__play" viewBox="0 0 16 16">
             <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
         </svg>
@@ -107,18 +106,16 @@ function renderActivity(activity) {
 // functions
 
 function addFuncionalities(btn, activity) {
-    let {index, time} = activity;
+    let {index, time, activate} = activity;
     let tiempo;
 
     btn[0].addEventListener('click', function () {
-        console.log('update');
-    });
-
-    btn[1].addEventListener('click', function () {
+        activities[index].activate = true;
         if (timeIntervals[index] == null) {
             for (let i = 0; i < timeIntervals.length; i++) {
-                if (i !== index) {
+                if (i !== index && timeIntervals[i] != null) {
                     clearInterval(timeIntervals[i]);
+                    activities[i].activate = false;
                     timeIntervals[i] = null;
                 }
             }
@@ -126,6 +123,7 @@ function addFuncionalities(btn, activity) {
                 time--;
                 if (time < 0) {
                     clearInterval(tiempo);
+                    activities[index].activate = false;
                     deleteActivity(index, this.parentNode.parentNode);
                 }else {
                     this.parentNode.parentNode.querySelector('.list__time').textContent = convertTime(time);
@@ -135,16 +133,34 @@ function addFuncionalities(btn, activity) {
             }, 1000);
             timeIntervals[index] = tiempo;
         }
-
     });
 
-    btn[2].addEventListener('click', function () {
+    if(activate === true) {
+        tiempo = setInterval(() => {
+            time--;
+            if (time < 0) {
+                clearInterval(tiempo);
+                deleteActivity(index, btn[0].parentNode.parentNode);
+            }else {
+                btn[1].parentNode.parentNode.querySelector('.list__time').textContent = convertTime(time);
+                activities[index].time = time;
+                activities[index].activate = false;
+                localStorage.setItem('tareas', JSON.stringify(activities));
+            }
+        }, 1000);
+        timeIntervals[index] = tiempo;
+    }
+    
+
+    btn[1].addEventListener('click', function () {
         clearInterval(timeIntervals[index]);
+        activities[index].activate = false;
         timeIntervals[index] = undefined;
     });
 
-    btn[3].addEventListener('click', function () {
+    btn[2].addEventListener('click', function () {
         clearInterval(tiempo);
+        activities[index].activate = false;
         deleteActivity(index, this.parentNode.parentNode)
     });
     activities.push(activity);
