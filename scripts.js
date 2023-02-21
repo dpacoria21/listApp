@@ -1,9 +1,13 @@
 // mainContainer
 const containerActivities = document.querySelector('.list-container');
 
+let exp; 
+let min;
+
 // Persistencia de datos
 let activities = [];
 let count = 0;
+const timeIntervals = [];
 
 if (localStorage.getItem('tareas') != null) {
     const aux = [...JSON.parse(localStorage.getItem('tareas'))];
@@ -28,7 +32,6 @@ const buttonTrash = document.querySelector('.icon__trash');
 
 // Lista de Actividades
 
-const timeIntervals = [];
 
 
 // clase Actividad
@@ -54,7 +57,7 @@ function convertTime(time) {
 
 // Crear la actividad y mostrarla en la lista
 function renderActivity(activity) {
-    let { title, time, description, index } = activity;
+    let { title, time, index } = activity;
     let html = `
     <div class="list__element" id="el__${index}">
     <div class="extension">
@@ -95,6 +98,16 @@ function renderActivity(activity) {
     `;
     containerActivities.insertAdjacentHTML("beforeend", html);
     const btn = document.querySelectorAll(`.boton__${index}`);
+
+    // Dando funcionalidad a los botones
+    addFuncionalities(btn, activity);
+
+}
+
+// functions
+
+function addFuncionalities(btn, activity) {
+    let {index, time} = activity;
     let tiempo;
 
     btn[0].addEventListener('click', function () {
@@ -103,7 +116,6 @@ function renderActivity(activity) {
 
     btn[1].addEventListener('click', function () {
         if (timeIntervals[index] == null) {
-            console.log('hola');
             for (let i = 0; i < timeIntervals.length; i++) {
                 if (i !== index) {
                     clearInterval(timeIntervals[i]);
@@ -112,49 +124,45 @@ function renderActivity(activity) {
             }
             tiempo = setInterval(() => {
                 time--;
-                if (time === 0) {
+                if (time < 0) {
                     clearInterval(tiempo);
-                    this.parentNode.parentNode.remove();
-                    timeIntervals.splice(index, 1);
-                    activities[index] = null;
-                    if(activities.every((act) => act == null)){
-                        activities = [];
-                        count = 0;
-                        localStorage.setItem('tareas', JSON.stringify(activities));
-                        localStorage.setItem('count', count);
-                    }
+                    deleteActivity(index, this.parentNode.parentNode);
+                }else {
+                    this.parentNode.parentNode.querySelector('.list__time').textContent = convertTime(time);
+                    activities[index].time = time;
                     localStorage.setItem('tareas', JSON.stringify(activities));
                 }
-                btn[0].parentNode.parentNode.querySelector('.list__time').textContent = convertTime(time);
-                activities[index].time = time;
-                localStorage.setItem('tareas', JSON.stringify(activities));
             }, 1000);
-            console.log(tiempo);
             timeIntervals[index] = tiempo;
         }
 
     });
+
     btn[2].addEventListener('click', function () {
         clearInterval(timeIntervals[index]);
         timeIntervals[index] = undefined;
     });
 
     btn[3].addEventListener('click', function () {
-        this.parentNode.parentNode.remove();
-        timeIntervals.splice(index, 1);
-        activities[index] = null;
-        if(activities.every((act) => act == null)){
-            activities = [];
-            count = 0;
-            localStorage.setItem('tareas', JSON.stringify(activities));
-            localStorage.setItem('count', count);
-        }
-        localStorage.setItem('tareas', JSON.stringify(activities));
+        clearInterval(tiempo);
+        deleteActivity(index, this.parentNode.parentNode)
     });
     activities.push(activity);
     localStorage.setItem('tareas', JSON.stringify(activities));
 }
 
+function deleteActivity(index, element) {
+    element.remove();
+    timeIntervals.splice(index, 1);
+    activities[index] = null;
+    if(activities.every((act) => act == null)){
+        activities = [];
+        count = 0;
+        localStorage.setItem('tareas', JSON.stringify(activities));
+        localStorage.setItem('count', count);
+    }
+    localStorage.setItem('tareas', JSON.stringify(activities));
+}
 
 
 //Inputs
@@ -186,7 +194,6 @@ rebootActivity.addEventListener('click', function (e) {
     cleanForm();
 });
 
-//Timer
 
 
 
