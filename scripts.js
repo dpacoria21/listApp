@@ -11,12 +11,13 @@ const timeIntervals = [];
 
 if (localStorage.getItem('tareas') != null) {
     const aux = [...JSON.parse(localStorage.getItem('tareas'))];
+    
     for(let i =0; i<aux.length; i++) {
-        if(aux[i]!=null) {
+        if(aux[i] != null) {
+            activities[aux[i].index] = aux[i];
             renderActivity(aux[i]);
         }
     };
-    activities = aux;
     count = +JSON.parse(localStorage.getItem('count'));
 }
 
@@ -112,16 +113,22 @@ function addFuncionalities(btn, activity) {
     btn[0].addEventListener('click', function () {
         activities[index].activate = true;
         if (timeIntervals[index] == null) {
+            activities.forEach((act) => {
+                if(act != null) {
+                    if(act.index != index) {
+                        act.activate = false;
+                    }
+                }
+            })
             for (let i = 0; i < timeIntervals.length; i++) {
                 if (i !== index && timeIntervals[i] != null) {
                     clearInterval(timeIntervals[i]);
-                    activities[i].activate = false;
                     timeIntervals[i] = null;
                 }
             }
             tiempo = setInterval(() => {
                 time--;
-                if (time < 0) {
+                if (time <= 0) {
                     clearInterval(tiempo);
                     activities[index].activate = false;
                     deleteActivity(index, this.parentNode.parentNode);
@@ -135,16 +142,30 @@ function addFuncionalities(btn, activity) {
         }
     });
 
+    btn[1].addEventListener('click', function () {
+        clearInterval(timeIntervals[index]);
+        activities[index].activate = false;
+        activate = false;
+        localStorage.setItem('tareas', JSON.stringify(activities));
+        timeIntervals[index] = undefined;
+    });
+
+    btn[2].addEventListener('click', function () {
+        clearInterval(tiempo);
+        activities[index].activate = false;
+        localStorage.setItem('tareas', JSON.stringify(activities));
+        deleteActivity(index, this.parentNode.parentNode)
+    });
+
     if(activate === true) {
         tiempo = setInterval(() => {
             time--;
-            if (time < 0) {
+            if (time <= 0) {
                 clearInterval(tiempo);
                 deleteActivity(index, btn[0].parentNode.parentNode);
             }else {
                 btn[1].parentNode.parentNode.querySelector('.list__time').textContent = convertTime(time);
                 activities[index].time = time;
-                activities[index].activate = false;
                 localStorage.setItem('tareas', JSON.stringify(activities));
             }
         }, 1000);
@@ -152,18 +173,8 @@ function addFuncionalities(btn, activity) {
     }
     
 
-    btn[1].addEventListener('click', function () {
-        clearInterval(timeIntervals[index]);
-        activities[index].activate = false;
-        timeIntervals[index] = undefined;
-    });
 
-    btn[2].addEventListener('click', function () {
-        clearInterval(tiempo);
-        activities[index].activate = false;
-        deleteActivity(index, this.parentNode.parentNode)
-    });
-    activities.push(activity);
+    activities[activity.index] = activity;
     localStorage.setItem('tareas', JSON.stringify(activities));
 }
 
