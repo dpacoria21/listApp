@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="styles.css" rel="stylesheet">
+    <title>Document</title>
+</head>
+<body>
+
+    <header class="header">
+        <img src="./logo.png" class="img">
+        <h1 class="title">
+            listApp
+        </h1>
+    </header>
+
+    <main>
+
+        <section class="container">
+            <div class="formulario">
+                <form class="form">
+
+                    <div class="form-container-title">
+                        <p class="form-header">Nueva Actividad</p>
+                    </div>
+
+                    <div class="form-container">
+                        <input class="form-title" type="text" id="title" name="title" required>
+                        <label class="span" for="title">Titulo</label>
+                    </div>
+
+                    <div class="form-container">
+                        <input class="form-time" id="time" type="number" name="time" required>
+                        <label class="span" for="time">Tiempo</label>
+                    </div>
+
+                    <div class="form-container">
+                        <textarea id="description" class="form-description" name="description" rows="1" cols="60" required></textarea>
+                        <label class="span" for="description">Descripcion</label>
+                    </div class="form-container">
+
+                    <div class="form-container buttons">
+                        <button class="form-button btn__1">Reiniciar
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                                <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                              </svg>
+                        </button>
+                            
+                        </button>
+                        <button class="form-button btn__2" type="submit">Agregar
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plugin" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a7 7 0 1 1 2.898 5.673c-.167-.121-.216-.406-.002-.62l1.8-1.8a3.5 3.5 0 0 0 4.572-.328l1.414-1.415a.5.5 0 0 0 0-.707l-.707-.707 1.559-1.563a.5.5 0 1 0-.708-.706l-1.559 1.562-1.414-1.414 1.56-1.562a.5.5 0 1 0-.707-.706l-1.56 1.56-.707-.706a.5.5 0 0 0-.707 0L5.318 5.975a3.5 3.5 0 0 0-.328 4.571l-1.8 1.8c-.58.58-.62 1.6.121 2.137A8 8 0 1 0 0 8a.5.5 0 0 0 1 0Z"/>
+                              </svg>
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+            <div class="list-container">
+
+                <!-- ELEMENTOS -->
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        2022 S.A.C
+        <ul>
+            <li>Facebook</li>
+            <li>Facebook</li>
+            <li>Facebook</li>
+            <li>Facebook</li>
+            <li>Facebook</li>
+        </ul>
+    </footer>
+
+
+
+    <script src="scripts.js"></script>
+    
+</body>
+</html>
